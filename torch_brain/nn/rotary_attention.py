@@ -389,8 +389,14 @@ def rotary_attn_pytorch_func(
         )
 
     # attention mask
+    # if attn_mask is not None:
+    #     attn_mask = attn_mask[:, None, None, :]  # (B, N) -> (B, 1, 1, N)
     if attn_mask is not None:
-        attn_mask = attn_mask[:, None, None, :]  # (B, N) -> (B, 1, 1, N)
+        if attn_mask.dim() == 2:
+            attn_mask = attn_mask.unsqueeze(1).unsqueeze(2) # equivalent to b n -> b () () n
+        elif attn_mask.dim() == 3:
+            attn_mask = attn_mask.unsqueeze(1) # equivalent to b n l -> b () n l
+
 
     # perform attention, by default will use the optimal attention implementation
     out = F.scaled_dot_product_attention(
