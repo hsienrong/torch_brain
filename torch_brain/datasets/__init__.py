@@ -12,6 +12,7 @@ __all__ = [
     "MultiChannelDatasetMixin",
     "PerichMillerPopulation2018",
     "PeiPandarinathNLB2021",
+    "area2NLB2021",
     "FlintSlutzkyAccurate2012",
     "ChurchlandShenoyNeural2012",
     "OdohertySabesNonhuman2017",
@@ -43,6 +44,7 @@ from .Neuroprobe2025 import Neuroprobe2025
 from .OdohertySabesNonhuman2017 import OdohertySabesNonhuman2017
 from .OpenNeuroDataset import OpenNeuroDataset, OpenNeuroSplitType
 from .PeiPandarinathNLB2021 import PeiPandarinathNLB2021
+from .area2NLB2021 import area2NLB2021
 from .PerichMillerPopulation2018 import PerichMillerPopulation2018
 from .ShiraziHBNR1DS005505 import ShiraziHBNR1DS005505
 from .VollanMoserAlternating2025 import VollanMoserAlternating2025
@@ -114,6 +116,7 @@ __api_ref__ = {
                 "OdohertySabesNonhuman2017",
                 "VollanMoserAlternating2025",
                 "ShiraziHBNR1DS005505",
+                "area2NLB2021",
             ],
         },
         {
