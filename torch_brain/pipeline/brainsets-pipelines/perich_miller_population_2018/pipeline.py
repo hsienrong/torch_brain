@@ -190,12 +190,18 @@ class Pipeline(BrainsetPipeline):
 
         self.update_status("Creating splits")
         # split trials into train, validation and test
+        # _, valid_trials, test_trials = split_trials(
+        #     trials.select_by_mask(trials.is_valid),
+        #     test_size=0.2,
+        #     valid_size=0.1,
+        #     random_state=42,
+        # )
         _, valid_trials, test_trials = split_trials(
             trials.select_by_mask(trials.is_valid),
             test_size=0.2,
-            valid_size=0.1,
-            random_state=42,
+            valid_size=0.1
         )
+
 
         train_sampling_intervals = data.domain.difference(
             (valid_trials | test_trials).dilate(1.0)
@@ -363,21 +369,40 @@ def detect_outliers(cursor):
     return cursor_outlier_segments
 
 
-def split_trials(trials, test_size=0.2, valid_size=0.1, random_state=42):
+# def split_trials(trials, test_size=0.2, valid_size=0.1, random_state=42):
+#     num_trials = len(trials)
+#     train_size = 1.0 - test_size - valid_size
+
+#     train_valid_ids, test_ids = train_test_split(
+#         np.arange(num_trials), test_size=test_size, random_state=random_state
+#     )
+#     train_ids, valid_ids = train_test_split(
+#         train_valid_ids,
+#         test_size=valid_size / (train_size + valid_size),
+#         random_state=random_state,
+#     )
+
+#     train_trials = trials.select_by_mask(np.isin(np.arange(num_trials), train_ids))
+#     valid_trials = trials.select_by_mask(np.isin(np.arange(num_trials), valid_ids))
+#     test_trials = trials.select_by_mask(np.isin(np.arange(num_trials), test_ids))
+
+#     return train_trials, valid_trials, test_trials
+
+def split_trials(trials, test_size=0.2, valid_size=0.1):
     num_trials = len(trials)
-    train_size = 1.0 - test_size - valid_size
-
-    train_valid_ids, test_ids = train_test_split(
-        np.arange(num_trials), test_size=test_size, random_state=random_state
-    )
-    train_ids, valid_ids = train_test_split(
-        train_valid_ids,
-        test_size=valid_size / (train_size + valid_size),
-        random_state=random_state,
-    )
-
+    
+    # Calculate the exact splitting index boundaries
+    train_end = int(num_trials * (1.0 - test_size - valid_size))
+    valid_end = int(num_trials * (1.0 - test_size))
+    
+    # Create the sequential index arrays
+    train_ids = np.arange(0, train_end)
+    valid_ids = np.arange(train_end, valid_end)
+    test_ids = np.arange(valid_end, num_trials)
+    
+    # Select the trials using your mask method
     train_trials = trials.select_by_mask(np.isin(np.arange(num_trials), train_ids))
     valid_trials = trials.select_by_mask(np.isin(np.arange(num_trials), valid_ids))
     test_trials = trials.select_by_mask(np.isin(np.arange(num_trials), test_ids))
-
+    
     return train_trials, valid_trials, test_trials
