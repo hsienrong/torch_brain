@@ -58,8 +58,8 @@ class RotaryCrossAttention(nn.Module):
         self.rotate_value = rotate_value
         self.use_xformers = use_xformers
 
-        self.norm = nn.LayerNorm(dim)
-        self.norm_context = nn.LayerNorm(context_dim)
+        self.norm = nn.RMSNorm(dim)
+        self.norm_context = nn.RMSNorm(context_dim)
 
         self.to_q = nn.Linear(dim, inner_dim, bias=False)
         self.to_kv = nn.Linear(context_dim, inner_dim * 2, bias=False)
@@ -236,7 +236,7 @@ class RotarySelfAttention(nn.Module):
         self.rotate_value = rotate_value
         self.use_xformers = use_xformers
 
-        self.norm = nn.LayerNorm(dim)
+        self.norm = nn.RMSNorm(dim)
 
         self.to_qkv = nn.Linear(dim, inner_dim * 3, bias=False)
         self.to_out = nn.Linear(inner_dim, dim)
